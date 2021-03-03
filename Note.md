@@ -1,0 +1,5 @@
+- `@babel/core` ES6 语法转换
+- `@babel/preset-env` 语法转换方案预设
+- `@rollup/plugin-babel` rollup 的 babel 插件
+- `rollup` 打包工具
+- `rollup-plugin-serve` 开发服务
