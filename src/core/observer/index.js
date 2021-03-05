@@ -27,12 +27,14 @@ export function observe(data) {
 export function defineReactive(obj, key) {
   let value = obj[key];
 
+  observe(value); // 如果 value 还是一个对象，也进行代理；
   Object.defineProperty(obj, key, {
     get() {
       return value;
     },
     set(newValue) {
       if (newValue === value) return;
+      observe(newValue); // 如果新设置的值是一个对象，也需要重新代理
       value = newValue;
     },
   });
