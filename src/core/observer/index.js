@@ -1,16 +1,33 @@
 import { isObject } from "../../util/index";
+import { arrayMethods } from "./array";
 
 class Observer {
   constructor(value) {
     this.value = value;
 
-    this.walk(value);
+    if (Array.isArray(value)) {
+      // 如果是数组，使用 defineProperty 代理，性能不好
+      // 重写劫持会改变数组的 7 个方法，增加自定义的更新逻辑
+      // push pop shift unshift reverse splice sort
+      protoAugment(value, arrayMethods);
+
+      // 数组中有对象的情况
+      this.observeArray(value);
+    } else {
+      this.walk(value);
+    }
   }
 
   walk(obj) {
     const keys = Object.keys(obj);
     for (let i = 0; i < keys.length; i++) {
       defineReactive(obj, keys[i]);
+    }
+  }
+
+  observeArray(array) {
+    for (let i = 0; i < array.length; i++) {
+      observe(array[i]);
     }
   }
 }
@@ -38,4 +55,8 @@ export function defineReactive(obj, key) {
       value = newValue;
     },
   });
+}
+
+function protoAugment(target, src) {
+  target.__proto__ = src;
 }
