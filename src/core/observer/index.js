@@ -1,9 +1,15 @@
-import { isObject } from "../../util/index";
+import { hasOwn, isObject } from "../../util/index";
 import { arrayMethods } from "./array";
 
 class Observer {
   constructor(value) {
     this.value = value;
+    // 增加自定义属性 __ob__ 保存 this
+    Object.defineProperty(value, "__ob__", {
+      value: this,
+      enumerable: false, // 不能被枚举 不能被循环
+      configurable: false, // 不能删除此属性
+    });
 
     if (Array.isArray(value)) {
       // 如果是数组，使用 defineProperty 代理，性能不好
@@ -35,6 +41,10 @@ class Observer {
 export function observe(data) {
   // data 必须是一个对象 否则无法观测
   if (!isObject(data)) {
+    return;
+  }
+
+  if (hasOwn(data, "__ob__") && data.__ob__ instanceof Observer) {
     return;
   }
 
