@@ -2,7 +2,7 @@ import babel from "@rollup/plugin-babel";
 import serve from "rollup-plugin-serve";
 
 export default {
-  input: "src/index.js",
+  input: "src/core/index.js",
   output: {
     file: "dist/vue.js",
     name: "Vue",
