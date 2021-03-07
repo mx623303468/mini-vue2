@@ -38,7 +38,7 @@ export function parseHTML(html) {
   }
 
   function chars(text) {
-    text = text.replace(/\s/g, "");
+    text = text.replace(/\s/g, " ");
     if (text) {
       currentParent.children.push({
         type: 3,
