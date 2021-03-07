@@ -36,7 +36,6 @@ function genChildren(el) {
 
 function gen(node) {
   if (node.type === 1) {
-    console.log(node);
     return generate(node);
   } else {
     // 文本不能用 _c 处理
