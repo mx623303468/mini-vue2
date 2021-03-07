@@ -1,5 +1,6 @@
 import { hasOwn, isObject } from "../../util/index";
 import { arrayMethods } from "./array";
+import Dep from "./dep";
 
 class Observer {
   constructor(value) {
@@ -55,14 +56,20 @@ export function defineReactive(obj, key) {
   let value = obj[key];
 
   observe(value); // 如果 value 还是一个对象，也进行代理；
+  let dep = new Dep(); // 每次都会给属性创建一个 Dep
   Object.defineProperty(obj, key, {
     get() {
+      if (Dep.target) {
+        dep.depend(); // 依赖收集，让这个属性的dep记住自己的watcher ，同时watcher 也记住这个dep
+      }
       return value;
     },
     set(newValue) {
       if (newValue === value) return;
       observe(newValue); // 如果新设置的值是一个对象，也需要重新代理
       value = newValue;
+
+      dep.notify(); // 通知记录的watcher 执行，进行渲染更新
     },
   });
 }

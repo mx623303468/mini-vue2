@@ -11,9 +11,10 @@ export function mountComponent(vm, el) {
 
 export function lifecycleMixin(Vue) {
   Vue.prototype._update = function (vnode) {
-    console.log("_update", vnode);
     // 将虚拟节点转换成真实的dom
     const vm = this;
-    vm.$el = patch(vm.$options.el, vnode);
+    // 初始化渲染的时候，会创建一个新节点，并且把老节点删除掉；
+    // vm.$el = patch(vm.$options.el, vnode);
+    vm.$options.el = patch(vm.$options.el, vnode);
   };
 }
