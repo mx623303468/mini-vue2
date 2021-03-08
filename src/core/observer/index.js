@@ -5,6 +5,7 @@ import Dep from "./dep";
 class Observer {
   constructor(value) {
     this.value = value;
+    this.dep = new Dep();
     // 增加自定义属性 __ob__ 保存 this
     Object.defineProperty(value, "__ob__", {
       value: this,
@@ -52,15 +53,37 @@ export function observe(data) {
   return new Observer(data);
 }
 
+// 让里层的数组收集外层数组的watcher
+// 里层和外层收集的是同一个watcher
+function dependArray(array) {
+  for (let i = 0; i < array.length; i++) {
+    const current = array[i];
+    current.__ob__ && current.__ob__.dep.depend();
+    if (Array.isArray(current)) {
+      dependArray(current);
+    }
+  }
+}
+
 export function defineReactive(obj, key) {
   let value = obj[key];
 
-  observe(value); // 如果 value 还是一个对象，也进行代理；
+  let childOb = observe(value); // 如果 value 还是一个对象，也进行代理；
   let dep = new Dep(); // 每次都会给属性创建一个 Dep
   Object.defineProperty(obj, key, {
     get() {
       if (Dep.target) {
         dep.depend(); // 依赖收集，让这个属性的dep记住自己的watcher ，同时watcher 也记住这个dep
+
+        // childOb 可能是对象，也可以是数组
+        // 如果是 将当前的watcher 进行关联
+        if (childOb) {
+          childOb.dep.depend();
+
+          if (Array.isArray(value)) {
+            dependArray(value);
+          }
+        }
       }
       return value;
     },

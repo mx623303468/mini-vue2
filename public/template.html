@@ -7,10 +7,7 @@
 </head>
 <body>
   <div id="app" style="color: red;background: skyblue;">
-    <span class="text">write a vue
-
-      <a href="">{{message}} aa {{name}} bb</a>
-    </span>
+    <span class="text">{{arr}}</span>
   </div>
   <script src="/dist/vue.js"></script>
   <script>
@@ -20,14 +17,17 @@
         return {
           message: 'hello vue',
           name: 'haha',
-          arr: [1, 2, {a: 1}]
+          arr: [[12],1, 2, {a: 1}]
         }
       }
     })
 
-    setTimeout(() => {
-      vm.message = '123'
-    }, 1000);
+      
+      vm.$nextTick(() => {
+        vm.arr[0].push(3)
+        console.log(vm.arr);
+      });
+    
   </script>
 </body>
 </html>

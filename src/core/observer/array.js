@@ -16,7 +16,7 @@ methodsToPatch.forEach((method) => {
   arrayMethods[method] = function (...args) {
     const original = originalArrayProto[method]; // 缓存原来的数组方法
     const result = original.apply(this, args); // 改变指向到现在的数组上
-
+    let ob = this.__ob__;
     // 用户新增的数据有可能是对象格式，也需要进行拦截
     let inserted;
     switch (method) {
@@ -29,9 +29,11 @@ methodsToPatch.forEach((method) => {
         break;
     }
 
-    if (inserted) this.__ob__.observeArray(inserted);
+    if (inserted) ob.observeArray(inserted);
+    ob.dep.notify();
 
     console.log("数组改变触发", method);
+
     return result;
   };
 });
