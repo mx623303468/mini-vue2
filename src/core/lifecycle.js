@@ -15,6 +15,15 @@ export function lifecycleMixin(Vue) {
     const vm = this;
     // 初始化渲染的时候，会创建一个新节点，并且把老节点删除掉；
     // vm.$el = patch(vm.$options.el, vnode);
-    vm.$options.el = patch(vm.$options.el, vnode);
+    vm.$el = patch(vm.$el, vnode);
   };
+}
+
+export function callHook(vm, hook) {
+  const handlers = vm.$options[hook];
+  if (handlers) {
+    for (let i = 0, len = handlers.length; i < len; i++) {
+      handlers[i].call(vm);
+    }
+  }
 }

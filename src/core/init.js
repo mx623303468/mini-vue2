@@ -1,14 +1,19 @@
 import { compileToFunctions } from "../compiler/index";
 import { nextTick } from "../util/next-tick";
-import { mountComponent } from "./lifecycle";
+import { mergeOptions } from "../util/options";
+import { callHook, mountComponent } from "./lifecycle";
 import { initState } from "./state";
 
 export function initMixin(Vue) {
   Vue.prototype._init = function (options) {
     const vm = this;
 
-    vm.$options = options; // 实例上有个 $options 的属性，保存用户传入的所有属性。
+    // vm.$options = options; // 实例上有个 $options 的属性，保存用户传入的所有属性。
+    vm.$options = mergeOptions(vm.constructor.options, options);
+
+    callHook(vm, "beforeCreate");
     initState(vm); // 初始化状态
+    callHook(vm, "created");
 
     if (vm.$options.el) {
       vm.$mount(vm.$options.el);
@@ -19,7 +24,7 @@ export function initMixin(Vue) {
     el = document.querySelector(el);
     const vm = this;
     const options = vm.$options;
-    vm.$options.el = el;
+    vm.$el = el;
 
     // 如果有 render 就直接使用 render
     // 没有 render 看有没有 template 属性
