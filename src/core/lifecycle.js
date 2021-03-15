@@ -16,6 +16,7 @@ export function lifecycleMixin(Vue) {
     // 初始化渲染的时候，会创建一个新节点，并且把老节点删除掉；
     // vm.$el = patch(vm.$options.el, vnode);
     vm.$el = patch(vm.$el, vnode);
+    console.log(vm.$el);
   };
 }
 

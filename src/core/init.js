@@ -20,7 +20,7 @@ export function initMixin(Vue) {
   };
 
   Vue.prototype.$mount = function (el) {
-    el = document.querySelector(el);
+    el = el && document.querySelector(el);
     const vm = this;
     const options = vm.$options;
     vm.$el = el;

@@ -1,4 +1,7 @@
 export function patch(oldVNode, vnode) {
+  if (!oldVNode) {
+    return createElm(vnode);
+  }
   const isRealElement = oldVNode.nodeType;
   if (isRealElement) {
     // 初次渲染
@@ -14,10 +17,25 @@ export function patch(oldVNode, vnode) {
   }
 }
 
+function createComponent(vnode) {
+  let i = vnode.data;
+  if ((i = i.hook) && (i = i.init)) {
+    i(vnode);
+  }
+  if (vnode.componentInstance) {
+    return true;
+  }
+  return false;
+}
+
 function createElm(vnode) {
   let { tag, children, key, data, text, vm } = vnode;
   if (typeof tag === "string") {
-    // 也可能是组件, 暂时没有考虑
+    // 也可能是组件
+    if (createComponent(vnode)) {
+      // 如果是组件 就将组件渲染后的真实元素返回
+      return vnode.componentInstance.$el;
+    }
     vnode.el = document.createElement(tag);
     updateProperties(vnode);
 
