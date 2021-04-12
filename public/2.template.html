@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>template</title>
+</head>
+<body>
+  <div id="app">
+    <my-button></my-button>
+    <my-button></my-button>
+    <my-button></my-button>
+  </div>
+  <script src="/dist/vue.js"></script>
+  <script>
+    Vue.component('my-button', {
+      template: '<button>按钮</button>'
+    })
+    const vm = new Vue({
+      el: '#app',
+      // components: {
+      //   'my-button': {
+      //     template: '<button>button</button>'
+      //   }
+      // }
+    })
+
+    // 1. Vue.component => Vue.extend方法 => 生成子类的构造函数
+    // 2. 如果是组件，会添加 init hook() componentOptions => Ctor
+    // 3. 创建真实节点时，会调用init 钩子，new Ctor().$mount() 内部会在组件上添加一个 watcher，会将渲染的节点放在当前实力上，并且返回
+  </script>
+</body>
+</html>
