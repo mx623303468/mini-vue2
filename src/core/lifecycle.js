@@ -15,7 +15,18 @@ export function lifecycleMixin(Vue) {
     const vm = this;
     // 初始化渲染的时候，会创建一个新节点，并且把老节点删除掉；
     // vm.$el = patch(vm.$options.el, vnode);
-    vm.$el = patch(vm.$el, vnode);
+
+    // 第一次初始化， 第二次走diff算法
+    const prevVNode = vm._vnode; // 去上一次的 vnode
+    vm._vnode = vnode; // 保存vnode
+
+    if (!prevVNode) {
+      // 如果上一次vnode 不存在，证明是第一次
+      vm.$el = patch(vm.$el, vnode);
+    } else {
+      // 如果上次vnode 存在，则走diff对比
+      vm.$el = patch(prevVNode, vnode);
+    }
   };
 }
 

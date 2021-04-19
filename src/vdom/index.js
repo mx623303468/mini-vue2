@@ -50,3 +50,7 @@ class VNode {
     this.componentOptions = componentOptions;
   }
 }
+
+export function isSameVNode(oldVNode, newVNode) {
+  return oldVNode.tag === newVNode.tag && oldVNode.key === newVNode.key;
+}
